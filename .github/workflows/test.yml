@@ -1,0 +1,562 @@
+
+name: Test
+
+on:
+  workflow_dispatch:
+  release:
+    types: [ published ]
+  push:
+    branches:
+      - '*'
+    paths:
+      - '**.sh'
+      - '.github/workflows/test.yml'
+      - 'index.js'
+      - 'conf/*'
+      - 'hooks/*'
+
+
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+
+jobs:
+  testsshfs:
+    if: ${{ !contains(github.repository, 'dragonflybsd') && !contains(github.repository, 'solaris') && !contains(github.repository, 'omnios')}}
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [ "r1beta5", ""]
+        arch: [ "aarch64", "", "riscv64"]
+        runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
+        exclude:
+          - runs: "ubuntu-24.04-arm"
+            arch: ""
+          - runs: "ubuntu-24.04-arm"
+            arch: "riscv64"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04-arm"
+          - arch: "riscv64"
+            runs: "ubuntu-24.04"
+
+
+
+    runs-on: ${{ matrix.runs }}
+    name: sshfs Haiku
+    env:
+      MYTOKEN : ${{ secrets.MYTOKEN }}
+      MYTOKEN2: "value2"
+      SEC_VBOX : ${{ vars.SEC_VBOX }}
+      DEBUG: 1
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check arch
+      id: check
+      run: |
+        _release="${{ matrix.release }}"
+        if [ -z "$_release" ]; then
+          . conf/default.release.conf
+          _release="$DEFAULT_RELEASE"
+        fi
+
+        _arch="${{ matrix.arch }}"
+        if [ "${_arch}" = "x86_64" ]; then
+          _arch=""
+        fi
+
+        if [ -z "${_arch}" ]; then
+          #ok, go ahead
+          echo "arch is empty"
+          echo "run=true" >> $GITHUB_OUTPUT
+        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
+          echo "conf exists: conf/${_release}-${_arch}.conf"
+          #ok, go ahead
+          if [[ "$(echo "Haiku" | tr '[:upper:]' '[:lower:]')-${_arch}" == "freebsd-riscv64" ]]; then
+            echo "The Haiku-${_arch} doesn't support sshfs, skip."
+            echo "run=false" >> $GITHUB_OUTPUT
+          else
+            echo "run=true" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "The release ${_release} doesn't support ${_arch}, skip."
+          echo "run=false" >> $GITHUB_OUTPUT
+        fi
+#    - name: Creating Web console
+#      if: ${{ steps.check.outputs.run == 'true' }}
+#      uses: vmactions/cf-tunnel@v0
+#      id: tunnel
+#      with:
+#        protocol: http
+#        port: 8000
+
+    - name: Test in Haiku
+      if: ${{ steps.check.outputs.run == 'true' }}
+      id: test
+      uses: vmactions/haiku-vm@320e929d54616efcc9251877170feaccd226b948
+      with:
+        envs: 'DEBUG MYTOKEN MYTOKEN2'
+        prepare: |
+          pkgman install -y socat
+        mem: 4096
+        release: ${{ matrix.release }}
+        arch: ${{ matrix.arch }}
+        nat: |
+          "20022": "22"
+          "8080": "80"
+          "8443": "443"
+          udp:"8081": "80"
+        usesh: true
+        debug: true
+        sync: sshfs
+        run: |
+          set -e
+          ls -lah /root/work
+          if [ -z "$(ls -A $HOME/work)" ]; then
+            echo "sshfs error."
+            exit 1
+          fi
+          echo "TEST_ENV=abc" >>${GITHUB_ENV}
+          echo "textfromvm" >$GITHUB_WORKSPACE/vm.txt
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+
+    - name: Test NAT
+      if: ${{ steps.check.outputs.run == 'true' }}
+      run: |
+        set -e
+        echo "TEST_ENV=$TEST_ENV"
+        [ "$TEST_ENV" = "abc" ]
+        ssh -v -p 20022 root@localhost  "uname -a;whoami;pwd"
+    - name: Test custom shell
+      if: ${{ steps.check.outputs.run == 'true' }}
+      shell: haiku {0}
+      run: |
+        pwd
+        cd $GITHUB_WORKSPACE;
+        pwd
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+
+
+
+
+
+
+  testnfs:
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [ "r1beta5", ""]
+        arch: [ "aarch64", "", "riscv64"]
+        runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
+        exclude:
+          - runs: "ubuntu-24.04-arm"
+            arch: ""
+          - runs: "ubuntu-24.04-arm"
+            arch: "riscv64"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04-arm"
+          - arch: "riscv64"
+            runs: "ubuntu-24.04"
+
+
+
+    runs-on: ${{ matrix.runs }}
+    name: nfs Haiku
+    env:
+      MYTOKEN : ${{ secrets.MYTOKEN }}
+      MYTOKEN2: "value2"
+      SEC_VBOX : ${{ vars.SEC_VBOX }}
+      DEBUG: 1
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check arch
+      id: check
+      run: |
+        _release="${{ matrix.release }}"
+        if [ -z "$_release" ]; then
+          . conf/default.release.conf
+          _release="$DEFAULT_RELEASE"
+        fi
+
+        _arch="${{ matrix.arch }}"
+        if [ "${_arch}" = "x86_64" ]; then
+          _arch=""
+        fi
+
+        if [ -z "${_arch}" ]; then
+          #ok, go ahead
+          echo "arch is empty"
+          echo "run=true" >> $GITHUB_OUTPUT
+        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
+          #ok, go ahead
+          echo "conf exists: conf/${_release}-${_arch}.conf"
+          if [[ "$(echo "Haiku" | tr '[:upper:]' '[:lower:]')-${_arch}" == "freebsd-riscv64" ]]; then
+            echo "The Haiku-${_arch} doesn't support nfs, skip."
+            echo "run=false" >> $GITHUB_OUTPUT
+          else
+            echo "run=true" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "The release ${_release} doesn't support ${_arch}, skip."
+          echo "run=false" >> $GITHUB_OUTPUT
+        fi
+#    - name: Creating Web console
+#      if: ${{ steps.check.outputs.run == 'true' }}
+#      uses: vmactions/cf-tunnel@v0
+#      id: tunnel
+#      with:
+#        protocol: http
+#        port: 8000
+    - name: Test in Haiku
+      if: ${{ steps.check.outputs.run == 'true' }}
+      id: test
+      uses: vmactions/haiku-vm@320e929d54616efcc9251877170feaccd226b948
+      with:
+        envs: 'DEBUG MYTOKEN MYTOKEN2'
+        prepare: |
+          pkgman install -y socat
+        mem: 4096
+        release: ${{ matrix.release }}
+        arch: ${{ matrix.arch }}
+        nat: |
+          "20022": "22"
+          "8080": "80"
+          "8443": "443"
+          udp:"8081": "80"
+        usesh: true
+        debug: true
+        sync: nfs
+        run: |
+          ls -lah /root/work
+          tree $HOME/work/
+          if [ -z "$(ls -A $HOME/work)" ]; then
+            echo "nfs error."
+            exit 1
+          fi
+          env
+          echo "TEST_ENV=abc" >>${GITHUB_ENV}
+          echo "textfromvm" >$GITHUB_WORKSPACE/vm.txt
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+
+    - name: Test NAT
+      if: ${{ steps.check.outputs.run == 'true' }}
+      run: |
+        set -e
+        [ -e "$GITHUB_WORKSPACE/vm.txt" ];
+        cat "$GITHUB_WORKSPACE/vm.txt";
+        grep "textfromvm" $GITHUB_WORKSPACE/vm.txt;
+        echo "TEST_ENV=$TEST_ENV"
+        [ "$TEST_ENV" = "abc" ]
+        ssh -v -p 20022 root@localhost "uname -a;whoami;pwd"
+    - name: Test custom shell
+      if: ${{ steps.check.outputs.run == 'true' }}
+      shell: haiku {0}
+      run: |
+        pwd
+        cd $GITHUB_WORKSPACE;
+        pwd
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+
+
+
+
+  testscp:
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [ "r1beta5", ""]
+        arch: [ "aarch64", "", "riscv64"]
+        runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
+        exclude:
+          - runs: "ubuntu-24.04-arm"
+            arch: ""
+          - runs: "ubuntu-24.04-arm"
+            arch: "riscv64"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04-arm"
+          - arch: "riscv64"
+            runs: "ubuntu-24.04"
+
+
+
+    runs-on: ${{ matrix.runs }}
+    name: scp Haiku
+    env:
+      MYTOKEN : ${{ secrets.MYTOKEN }}
+      MYTOKEN2: "value2"
+      SEC_VBOX : ${{ vars.SEC_VBOX }}
+      DEBUG: 1
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check arch
+      id: check
+      run: |
+        _release="${{ matrix.release }}"
+        if [ -z "$_release" ]; then
+          . conf/default.release.conf
+          _release="$DEFAULT_RELEASE"
+        fi
+
+        _arch="${{ matrix.arch }}"
+        if [ "${_arch}" = "x86_64" ]; then
+          _arch=""
+        fi
+
+        if [ -z "${_arch}" ]; then
+          #ok, go ahead
+          echo "arch is empty"
+          echo "run=true" >> $GITHUB_OUTPUT
+        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
+          #ok, go ahead
+          echo "conf exists: conf/${_release}-${_arch}.conf"
+          echo "run=true" >> $GITHUB_OUTPUT
+        else
+          echo "The release ${_release} doesn't support ${_arch}, skip."
+          echo "run=false" >> $GITHUB_OUTPUT
+        fi
+#    - name: Creating Web console
+#      if: ${{ steps.check.outputs.run == 'true' }}
+#      uses: vmactions/cf-tunnel@v0
+#      id: tunnel
+#      with:
+#        protocol: http
+#        port: 8000
+    - name: Test in Haiku
+      if: ${{ steps.check.outputs.run == 'true' }}
+      id: test
+      uses: vmactions/haiku-vm@320e929d54616efcc9251877170feaccd226b948
+      with:
+        envs: 'DEBUG MYTOKEN MYTOKEN2'
+        prepare: |
+          pkgman install -y socat
+        mem: 4096
+        release: ${{ matrix.release }}
+        arch: ${{ matrix.arch }}
+        nat: |
+          "20022": "22"
+          "8080": "80"
+          "8443": "443"
+          udp:"8081": "80"
+        usesh: true
+        debug: true
+        sync: scp
+        run: |
+          ls -lah /root/work
+          #don't use tree here, freebsd riscv64 doesn't have a tree
+          #tree $HOME/work/
+          if [ -z "$(ls -A $HOME/work)" ]; then
+            echo "nfs error."
+            exit 1
+          fi
+          env
+          echo "TEST_ENV=abc" >>${GITHUB_ENV}
+          echo "textfromvm" >$GITHUB_WORKSPACE/vm.txt
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+
+    - name: Test files
+      if: ${{ steps.check.outputs.run == 'true' }}
+      run: |
+        set -e
+        [ -e "$GITHUB_WORKSPACE/vm.txt" ];
+        cat "$GITHUB_WORKSPACE/vm.txt";
+        grep "textfromvm" $GITHUB_WORKSPACE/vm.txt;
+        cat ${GITHUB_ENV}
+        echo "TEST_ENV=$TEST_ENV";
+        [ "$TEST_ENV" = "abc" ];
+        
+
+
+
+
+
+
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [ "r1beta5", ""]
+        arch: [ "aarch64", "", "riscv64"]
+        runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
+        exclude:
+          - runs: "ubuntu-24.04-arm"
+            arch: ""
+          - runs: "ubuntu-24.04-arm"
+            arch: "riscv64"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04"
+          - arch: "aarch64"
+            runs: "ubuntu-24.04-arm"
+          - arch: "riscv64"
+            runs: "ubuntu-24.04"
+
+
+
+
+    runs-on: ${{ matrix.runs }}
+    name: rsync default Haiku
+    env:
+      MYTOKEN : ${{ secrets.MYTOKEN }}
+      MYTOKEN2: "value2"
+      SEC_VBOX : ${{ vars.SEC_VBOX }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check arch
+      id: check
+      run: |
+        _release="${{ matrix.release }}"
+        if [ -z "$_release" ]; then
+          . conf/default.release.conf
+          _release="$DEFAULT_RELEASE"
+        fi
+
+        _arch="${{ matrix.arch }}"
+        if [ "${_arch}" = "x86_64" ]; then
+          _arch=""
+        fi
+
+        if [ -z "${_arch}" ]; then
+          #ok, go ahead
+          echo "arch is empty"
+          echo "run=true" >> $GITHUB_OUTPUT
+        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
+          #ok, go ahead
+          echo "conf exists: conf/${_release}-${_arch}.conf"
+          if [[ "$(echo "Haiku" | tr '[:upper:]' '[:lower:]')-${_arch}" == "freebsd-riscv64" ]]; then
+            echo "The Haiku-${_arch} doesn't support rsync, skip."
+            echo "run=false" >> $GITHUB_OUTPUT
+          else
+            echo "run=true" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "The release ${_release} doesn't support ${_arch}, skip."
+          echo "run=false" >> $GITHUB_OUTPUT
+        fi
+    - name: Test in Haiku
+      if: ${{ steps.check.outputs.run == 'true' }}
+      id: test
+      uses: vmactions/haiku-vm@320e929d54616efcc9251877170feaccd226b948
+      with:
+        envs: 'MYTOKEN MYTOKEN2'
+        prepare: |
+          pkgman install -y socat
+        mem: 4096
+        release: ${{ matrix.release }}
+        arch: ${{ matrix.arch }}
+        nat: |
+          "20022": "22"
+          "8080": "80"
+          "8443": "443"
+          udp:"8081": "80"
+        usesh: true
+        debug: true
+        run: |
+          env
+          echo "TEST_ENV=abc" >>${GITHUB_ENV}
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+    - name: Test NAT
+      if: ${{ steps.check.outputs.run == 'true' }}
+      run: |
+        set -e
+        echo "TEST_ENV=$TEST_ENV"
+        [ "$TEST_ENV" = "abc" ]
+        ssh -v  -p 20022 root@localhost  "uname -a;whoami;pwd"
+
+    - name: Test custom shell
+      if: ${{ steps.check.outputs.run == 'true' }}
+      shell: haiku {0}
+      run: |
+        pwd
+        cd $GITHUB_WORKSPACE;
+        pwd
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+
+
+
+
+
+
+
+

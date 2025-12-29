@@ -1,0 +1,26 @@
+{
+  "name": "vmactions-Haiku",
+  "version": "",
+  "description": "GitHub actions for Haiku",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vmactions/haiku-vm.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Actions",
+    "Haiku"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vmactions/haiku-vm/issues"
+  },
+  "homepage": "https://github.com/vmactions/haiku-vm",
+  "dependencies": {
+    "@actions/core": "^2.0.1",
+    "@actions/exec": "^2.0.0",
+    "@actions/cache": "^5.0.0"
+  }
+}
