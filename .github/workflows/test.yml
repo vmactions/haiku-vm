@@ -458,11 +458,13 @@ jobs:
           echo "OK"
     - name: Test NAT
       if: ${{ steps.check.outputs.run == 'true' }}
+      env:
+        VM_USER: "user"
       run: |
         set -e
         echo "TEST_ENV=$TEST_ENV"
         [ "$TEST_ENV" = "abc" ]
-        ssh -v  -p 20022 ${"user":-root}@localhost  "uname -a;whoami;pwd"
+        ssh -v  -p 20022 ${VM_USER:-root}@localhost  "uname -a;whoami;pwd"
 
     - name: Test custom shell
       if: ${{ steps.check.outputs.run == 'true' }}
