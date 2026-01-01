@@ -432,10 +432,6 @@ async function main() {
     // Add GITHUB_* wildcard
     sendEnvs.push("GITHUB_*");
     sendEnvs.push("CI");
-
-    if (sendEnvs.length > 0) {
-      fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
-    }
     if (osName === 'haiku') {
       for (const key of Object.keys(process.env)) {
         if (key.startsWith('GITHUB_')) {
@@ -447,6 +443,10 @@ async function main() {
         }
       }
     }
+    if (sendEnvs.length > 0) {
+      fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
+    }
+
     fs.appendFileSync(sshConfigPath, "Host *\n  StrictHostKeyChecking no\n");
 
     //support Custom shell
