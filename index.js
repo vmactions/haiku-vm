@@ -448,6 +448,10 @@ async function main() {
     }
 
     fs.appendFileSync(sshConfigPath, "Host *\n  StrictHostKeyChecking no\n");
+    if (debug) {
+      core.info("SSH config content:");
+      core.info(fs.readFileSync(sshConfigPath, "utf8"));
+    }
 
     //support Custom shell
     const localBinDir = path.join(process.env["HOME"], ".local", "bin");
