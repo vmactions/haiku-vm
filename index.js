@@ -436,6 +436,10 @@ async function main() {
     if (sendEnvs.length > 0) {
       fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
     }
+    if (osName === 'haiku' && process.env.GITHUB_WORKSPACE) {
+      const newWorkspace = process.env.GITHUB_WORKSPACE.replace(work, vmwork);
+      fs.appendFileSync(sshConfigPath, `  SetEnv GITHUB_WORKSPACE=${newWorkspace}\n`);
+    }
     fs.appendFileSync(sshConfigPath, "Host *\n  StrictHostKeyChecking no\n");
 
     //support Custom shell

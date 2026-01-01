@@ -98,7 +98,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@0f32ba7eb0ab2bd4f0002e7b97bd236a46dc4d99
+      uses: vmactions/haiku-vm@95e796759eec5b5cc069328e2d0148ba5891e92c
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -106,17 +106,12 @@ jobs:
         mem: 4096
         release: ${{ matrix.release }}
         arch: ${{ matrix.arch }}
-        nat: |
-          "20022": "22"
-          "8080": "80"
-          "8443": "443"
-          udp:"8081": "80"
         usesh: true
         debug: true
         sync: sshfs
         run: |
           set -e
-          ls -lah /root/work
+          ls -lah $HOME/work
           if [ -z "$(ls -A $HOME/work)" ]; then
             echo "sshfs error."
             exit 1
@@ -134,34 +129,6 @@ jobs:
           whoami
           env
           echo "OK"
-
-    - name: Test NAT
-      if: ${{ steps.check.outputs.run == 'true' }}
-      run: |
-        set -e
-        echo "TEST_ENV=$TEST_ENV"
-        [ "$TEST_ENV" = "abc" ]
-        ssh -v -p 20022 root@localhost  "uname -a;whoami;pwd"
-    - name: Test custom shell
-      if: ${{ steps.check.outputs.run == 'true' }}
-      shell: haiku {0}
-      run: |
-        pwd
-        cd $GITHUB_WORKSPACE;
-        pwd
-          if [ -n "test" ]; then
-            echo "false"
-          fi
-          if [ "test" ]; then
-            echo "test"
-          fi
-          pwd
-          ls -lah
-          whoami
-          env
-          echo "OK"
-
-
 
 
 
@@ -238,7 +205,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@0f32ba7eb0ab2bd4f0002e7b97bd236a46dc4d99
+      uses: vmactions/haiku-vm@95e796759eec5b5cc069328e2d0148ba5891e92c
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -246,16 +213,11 @@ jobs:
         mem: 4096
         release: ${{ matrix.release }}
         arch: ${{ matrix.arch }}
-        nat: |
-          "20022": "22"
-          "8080": "80"
-          "8443": "443"
-          udp:"8081": "80"
         usesh: true
         debug: true
         sync: nfs
         run: |
-          ls -lah /root/work
+          ls -lah $HOME/work
           tree $HOME/work/
           if [ -z "$(ls -A $HOME/work)" ]; then
             echo "nfs error."
@@ -276,34 +238,7 @@ jobs:
           env
           echo "OK"
 
-    - name: Test NAT
-      if: ${{ steps.check.outputs.run == 'true' }}
-      run: |
-        set -e
-        [ -e "$GITHUB_WORKSPACE/vm.txt" ];
-        cat "$GITHUB_WORKSPACE/vm.txt";
-        grep "textfromvm" $GITHUB_WORKSPACE/vm.txt;
-        echo "TEST_ENV=$TEST_ENV"
-        [ "$TEST_ENV" = "abc" ]
-        ssh -v -p 20022 root@localhost "uname -a;whoami;pwd"
-    - name: Test custom shell
-      if: ${{ steps.check.outputs.run == 'true' }}
-      shell: haiku {0}
-      run: |
-        pwd
-        cd $GITHUB_WORKSPACE;
-        pwd
-          if [ -n "test" ]; then
-            echo "false"
-          fi
-          if [ "test" ]; then
-            echo "test"
-          fi
-          pwd
-          ls -lah
-          whoami
-          env
-          echo "OK"
+
 
 
 
@@ -375,7 +310,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@0f32ba7eb0ab2bd4f0002e7b97bd236a46dc4d99
+      uses: vmactions/haiku-vm@95e796759eec5b5cc069328e2d0148ba5891e92c
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -383,16 +318,11 @@ jobs:
         mem: 4096
         release: ${{ matrix.release }}
         arch: ${{ matrix.arch }}
-        nat: |
-          "20022": "22"
-          "8080": "80"
-          "8443": "443"
-          udp:"8081": "80"
         usesh: true
         debug: true
         sync: scp
         run: |
-          ls -lah /root/work
+          ls -lah $HOME/work
           #don't use tree here, freebsd riscv64 doesn't have a tree
           #tree $HOME/work/
           if [ -z "$(ls -A $HOME/work)" ]; then
@@ -497,7 +427,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@0f32ba7eb0ab2bd4f0002e7b97bd236a46dc4d99
+      uses: vmactions/haiku-vm@95e796759eec5b5cc069328e2d0148ba5891e92c
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -532,14 +462,12 @@ jobs:
         set -e
         echo "TEST_ENV=$TEST_ENV"
         [ "$TEST_ENV" = "abc" ]
-        ssh -v  -p 20022 root@localhost  "uname -a;whoami;pwd"
+        ssh -v  -p 20022 ${"user":-root}@localhost  "uname -a;whoami;pwd"
 
     - name: Test custom shell
       if: ${{ steps.check.outputs.run == 'true' }}
       shell: haiku {0}
       run: |
-        pwd
-        cd $GITHUB_WORKSPACE;
         pwd
           if [ -n "test" ]; then
             echo "false"
