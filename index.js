@@ -425,6 +425,21 @@ async function main() {
     }
     const sshConfigPath = path.join(sshDir, "config");
 
+    const workRegex = new RegExp(work.replace(/\\/g, '\\\\'), 'gi');
+
+    if (osName === 'haiku') {
+      for (const key of Object.keys(process.env)) {
+        if (key.startsWith('GITHUB_') || key === 'CI' || key === 'MYTOKEN' || key === 'MYTOKEN2') {
+          const val = process.env[key];
+          if (val !== undefined) {
+            const newVal = val.replace(workRegex, vmwork);
+            // SSH SetEnv syntax is VAR=VALUE, usually without quotes or quotes handled by shell
+            fs.appendFileSync(sshConfigPath, `SetEnv ${key}=${newVal}\n`);
+          }
+        }
+      }
+    }
+
     let sendEnvs = [];
     if (envs) {
       sendEnvs.push(envs);
@@ -443,20 +458,6 @@ async function main() {
     if (debug) {
       core.info("SSH config content:");
       core.info(fs.readFileSync(sshConfigPath, "utf8"));
-    }
-
-    const workRegex = new RegExp(work.replace(/\\/g, '\\\\'), 'gi');
-
-    if (osName === 'haiku') {
-      for (const key of Object.keys(process.env)) {
-        if (key.startsWith('GITHUB_')) {
-          const val = process.env[key];
-          if (val) {
-            const newVal = val.replace(workRegex, vmwork);
-            fs.appendFileSync(sshConfigPath, `SetEnv ${key}="${newVal}"\n`);
-          }
-        }
-      }
     }
 
     const sshConfig = {
@@ -527,7 +528,7 @@ async function main() {
       if (workspace) {
         core.info("Copying back artifacts");
         if (sync === 'scp') {
-          const remoteTarCmd = `cd "${vmwork}" && find . -name .git -prune -o -print | cpio -o -H ustar`;
+          const remoteTarCmd = `if command -v cpio > /dev/null 2>&1; then cd "${vmwork}" && find . -name .git -prune -o -print | cpio -o -H ustar; else cd "${vmwork}" && tar -cf - --exclude .git .; fi`;
           core.info(`Exec SSH: ${remoteTarCmd}`);
 
           await new Promise((resolve, reject) => {
