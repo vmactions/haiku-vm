@@ -436,9 +436,16 @@ async function main() {
     if (sendEnvs.length > 0) {
       fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
     }
-    if (osName === 'haiku' && process.env.GITHUB_WORKSPACE) {
-      const newWorkspace = process.env.GITHUB_WORKSPACE.replace(work, vmwork);
-      fs.appendFileSync(sshConfigPath, `  SetEnv GITHUB_WORKSPACE=${newWorkspace}\n`);
+    if (osName === 'haiku') {
+      for (const key of Object.keys(process.env)) {
+        if (key.startsWith('GITHUB_')) {
+          const val = process.env[key];
+          if (val && val.includes(work)) {
+            const newVal = val.replace(work, vmwork);
+            fs.appendFileSync(sshConfigPath, `  SetEnv ${key}=${newVal}\n`);
+          }
+        }
+      }
     }
     fs.appendFileSync(sshConfigPath, "Host *\n  StrictHostKeyChecking no\n");
 
