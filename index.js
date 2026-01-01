@@ -374,7 +374,9 @@ async function main() {
     args.push("--ssh-name", sshHost);
 
     args.push("--snapshot");
-    args.push("--vnc", "off");
+    if (osName !== 'haiku') {
+      args.push("--vnc", "off");
+    }
 
     core.startGroup("Starting VM with anyvm.org");
     let output = "";
