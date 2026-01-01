@@ -432,19 +432,20 @@ async function main() {
     // Add GITHUB_* wildcard
     sendEnvs.push("GITHUB_*");
     sendEnvs.push("CI");
-    if (osName === 'haiku') {
-      for (const key of Object.keys(process.env)) {
-        if (key.startsWith('GITHUB_')) {
-          const val = process.env[key];
-          if (val && val.includes(work)) {
-            const newVal = val.replace(work, vmwork);
-            fs.appendFileSync(sshConfigPath, `  SetEnv ${key}=${newVal}\n`);
+
+    if (sendEnvs.length > 0) {
+      fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
+      if (osName === 'haiku') {
+        for (const key of Object.keys(process.env)) {
+          if (key.startsWith('GITHUB_')) {
+            const val = process.env[key];
+            if (val && val.includes(work)) {
+              const newVal = val.replace(work, vmwork);
+              fs.appendFileSync(sshConfigPath, `  SetEnv ${key}=${newVal}\n`);
+            }
           }
         }
       }
-    }
-    if (sendEnvs.length > 0) {
-      fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
     }
 
     fs.appendFileSync(sshConfigPath, "Host *\n  StrictHostKeyChecking no\n");
