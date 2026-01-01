@@ -435,20 +435,20 @@ async function main() {
 
     if (sendEnvs.length > 0) {
       fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
-      if (osName === 'haiku') {
-        for (const key of Object.keys(process.env)) {
-          if (key.startsWith('GITHUB_')) {
-            const val = process.env[key];
-            if (val && val.includes(work)) {
-              const newVal = val.replace(work, vmwork);
-              fs.appendFileSync(sshConfigPath, `  SetEnv ${key}=${newVal}\n`);
-            }
+    }
+
+    fs.appendFileSync(sshConfigPath, "Host *\n  StrictHostKeyChecking no\n");
+    if (osName === 'haiku') {
+      for (const key of Object.keys(process.env)) {
+        if (key.startsWith('GITHUB_')) {
+          const val = process.env[key];
+          if (val && val.includes(work)) {
+            const newVal = val.replace(work, vmwork);
+            fs.appendFileSync(sshConfigPath, `SendEnv ${key}=${newVal}\n`);
           }
         }
       }
     }
-
-    fs.appendFileSync(sshConfigPath, "Host *\n  StrictHostKeyChecking no\n");
     if (debug) {
       core.info("SSH config content:");
       core.info(fs.readFileSync(sshConfigPath, "utf8"));
