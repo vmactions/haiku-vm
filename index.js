@@ -378,8 +378,8 @@ async function main() {
     args.push("--ssh-name", sshHost);
 
     args.push("--snapshot");
-    if (osName !== 'haiku') {
-      args.push("--vnc", "off");
+    if (osName === 'haiku') {
+      args.push("--vga", "std");
     }
 
     core.startGroup("Starting VM with anyvm.org");
