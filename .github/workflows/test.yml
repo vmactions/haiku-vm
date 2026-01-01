@@ -98,11 +98,11 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@768204322a6f8cf03f12dc7a766a1e38e9a7d9f6
+      uses: vmactions/haiku-vm@5fb6e53c74cc172a1268855a9ea8a476074a807b
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
-          pkgman install -y socat
+          pkgman install -y curl
         mem: 4096
         release: ${{ matrix.release }}
         arch: ${{ matrix.arch }}
@@ -238,11 +238,11 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@768204322a6f8cf03f12dc7a766a1e38e9a7d9f6
+      uses: vmactions/haiku-vm@5fb6e53c74cc172a1268855a9ea8a476074a807b
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
-          pkgman install -y socat
+          pkgman install -y curl
         mem: 4096
         release: ${{ matrix.release }}
         arch: ${{ matrix.arch }}
@@ -375,11 +375,11 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@768204322a6f8cf03f12dc7a766a1e38e9a7d9f6
+      uses: vmactions/haiku-vm@5fb6e53c74cc172a1268855a9ea8a476074a807b
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
-          pkgman install -y socat
+          pkgman install -y curl
         mem: 4096
         release: ${{ matrix.release }}
         arch: ${{ matrix.arch }}
@@ -497,11 +497,11 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@768204322a6f8cf03f12dc7a766a1e38e9a7d9f6
+      uses: vmactions/haiku-vm@5fb6e53c74cc172a1268855a9ea8a476074a807b
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
-          pkgman install -y socat
+          pkgman install -y curl
         mem: 4096
         release: ${{ matrix.release }}
         arch: ${{ matrix.arch }}
