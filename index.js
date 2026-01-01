@@ -425,25 +425,28 @@ async function main() {
     }
     const sshConfigPath = path.join(sshDir, "config");
 
-    let sendEnvs = [];
-    if (envs) {
-      sendEnvs.push(envs);
-    }
-    // Add GITHUB_* wildcard
-    sendEnvs.push("GITHUB_*");
-    sendEnvs.push("CI");
-
     if (osName === 'haiku') {
       for (const key of Object.keys(process.env)) {
         if (key.startsWith('GITHUB_')) {
           const val = process.env[key];
-          if (val && val.includes(work)) {
-            const newVal = val.replace(work, vmwork);
-            fs.appendFileSync(sshConfigPath, `SetEnv ${key}=${newVal}\n`);
+          if (val) {
+            // Use split/join for global replacement of work path
+            const newVal = val.split(work).join(vmwork);
+            fs.appendFileSync(sshConfigPath, `SetEnv ${key}="${newVal}"\n`);
           }
         }
       }
     }
+
+    let sendEnvs = [];
+    if (envs) {
+      sendEnvs.push(envs);
+    }
+    // Only use wildcard GITHUB_* if not on Haiku (since we SetEnv them manually on Haiku)
+    if (osName !== 'haiku') {
+      sendEnvs.push("GITHUB_*");
+    }
+    sendEnvs.push("CI");
 
     if (sendEnvs.length > 0) {
       fs.appendFileSync(sshConfigPath, `Host ${sshHost}\n  SendEnv ${sendEnvs.join(" ")}\n`);
