@@ -425,13 +425,15 @@ async function main() {
     }
     const sshConfigPath = path.join(sshDir, "config");
 
+    const workRegex = new RegExp(work.replace(/\\/g, '\\\\'), 'gi');
+
     if (osName === 'haiku') {
       for (const key of Object.keys(process.env)) {
         if (key.startsWith('GITHUB_')) {
           const val = process.env[key];
           if (val) {
-            // Use split/join for global replacement of work path
-            const newVal = val.split(work).join(vmwork);
+            // Robust global case-insensitive replacement
+            const newVal = val.replace(workRegex, vmwork);
             fs.appendFileSync(sshConfigPath, `SetEnv ${key}="${newVal}"\n`);
           }
         }
@@ -442,7 +444,8 @@ async function main() {
     if (envs) {
       sendEnvs.push(envs);
     }
-    // Only use wildcard GITHUB_* if not on Haiku (since we SetEnv them manually on Haiku)
+
+    // CRITICAL: Only send labels, not GITHUB_* wildcard if we used SetEnv
     if (osName !== 'haiku') {
       sendEnvs.push("GITHUB_*");
     }
