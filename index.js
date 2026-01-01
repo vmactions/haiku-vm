@@ -115,19 +115,34 @@ function downloadFile(url, dest) {
 async function execSSH(cmd, sshConfig, ignoreReturn = false) {
   core.info(`Exec SSH: ${cmd}`);
 
+  const sshHost = sshConfig.host;
+  const osName = sshConfig.osName;
+  const work = sshConfig.work;
+  const vmwork = sshConfig.vmwork;
+
   // Standard options for CI/CD
   const args = [
     "-o", "StrictHostKeyChecking=no",
     "-o", "UserKnownHostsFile=/dev/null",
   ];
 
-  // We assume the Host is the OS name (e.g. 'openbsd'), configured in ~/.ssh/config or by anyvm.py
-  const host = sshConfig.host;
+  let envExports = "";
+  if (osName === 'haiku' && work && vmwork) {
+    const workRegex = new RegExp(work.replace(/\\/g, '\\\\'), 'gi');
+    for (const key of Object.keys(process.env)) {
+      if (key.startsWith('GITHUB_') || key === 'CI' || key === 'MYTOKEN' || key === 'MYTOKEN2') {
+        const val = process.env[key] || "";
+        const newVal = val.replace(workRegex, vmwork);
+        envExports += `export ${key}="${newVal}"\n`;
+      }
+    }
+  }
 
   try {
-    // Pipe command to sh stdin to avoid escaping issues and support multi-line commands
-    await exec.exec("ssh", [...args, host, "sh"], {
-      input: Buffer.from(cmd)
+    // Pipe prefix exports + command to sh stdin
+    const fullCmd = envExports + cmd;
+    await exec.exec("ssh", [...args, sshHost, "sh"], {
+      input: Buffer.from(fullCmd)
     });
   } catch (err) {
     if (!ignoreReturn) {
@@ -418,33 +433,17 @@ async function main() {
       }
     }
 
-    // SSH Env Config
     const sshDir = path.join(process.env["HOME"], ".ssh");
     if (!fs.existsSync(sshDir)) {
       fs.mkdirSync(sshDir, { recursive: true });
     }
     const sshConfigPath = path.join(sshDir, "config");
 
-    const workRegex = new RegExp(work.replace(/\\/g, '\\\\'), 'gi');
-
-    if (osName === 'haiku') {
-      for (const key of Object.keys(process.env)) {
-        if (key.startsWith('GITHUB_') || key === 'CI' || key === 'MYTOKEN' || key === 'MYTOKEN2') {
-          const val = process.env[key];
-          if (val !== undefined) {
-            const newVal = val.replace(workRegex, vmwork);
-            // SSH SetEnv syntax is VAR=VALUE, usually without quotes or quotes handled by shell
-            fs.appendFileSync(sshConfigPath, `SetEnv ${key}=${newVal}\n`);
-          }
-        }
-      }
-    }
-
     let sendEnvs = [];
     if (envs) {
       sendEnvs.push(envs);
     }
-    // Add GITHUB_* wildcard for non-Haiku (legacy)
+    // Only use wildcard GITHUB_* if not on Haiku (since we use injection on Haiku)
     if (osName !== 'haiku') {
       sendEnvs.push("GITHUB_*");
     }
