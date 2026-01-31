@@ -1,13 +1,17 @@
 
-const core = require('@actions/core');
-const exec = require('@actions/exec');
-const cache = require('@actions/cache');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const https = require('https');
-const { spawn } = require('child_process');
-const crypto = require('crypto');
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import * as cache from '@actions/cache';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import * as https from 'https';
+import { spawn } from 'child_process';
+import * as crypto from 'crypto';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const workingDir = __dirname;
 
@@ -386,7 +390,7 @@ async function main() {
     const cacheDirInput = core.getInput("cache-dir") || '';
     let cacheDir;
     const archForKey = arch || (process.arch === 'x64' ? 'amd64' : process.arch);
-    const cacheKey = `${osName}-${release}-${builderVersion || 'default'}-${archForKey}-v1`;
+    const cacheKey = `${osName}-${release}-${builderVersion || 'default'}-${archForKey}-v2`;
     const restoreKeys = [cacheKey];
     let restoredKey = null;
 
@@ -404,6 +408,14 @@ async function main() {
         core.info(`cache.restoreCache() took ${restoreElapsed}ms`);
         if (restoredKey) {
           core.info(`Cache restored: ${restoredKey}`);
+          if (debug === 'true' && cacheDir && fs.existsSync(cacheDir)) {
+            core.info('Restored cache dir preview (debug)');
+            try {
+              await exec.exec('ls', ['-R', cacheDir]);
+            } catch (e) {
+              core.warning(`Listing restored cache dir failed: ${e.message}`);
+            }
+          }
         } else {
           core.info('No cache hit for VM cache directory');
         }
@@ -503,14 +515,13 @@ async function main() {
     if (cacheSupported && !disableCache) {
       core.startGroup("Save Cache");
       if (debug === 'true' && cacheDir && fs.existsSync(cacheDir)) {
-        core.startGroup('Cache dir preview (debug)');
+        core.info('Cache dir preview (debug)');
         try {
           await exec.exec('du', ['-sh', cacheDir]);
           await exec.exec('find', [cacheDir, '-maxdepth', '5', '-type', 'f']);
         } catch (e) {
           core.warning(`Listing cache dir failed: ${e.message}`);
         }
-        core.endGroup();
       }
       try {
         if (!restoredKey && cacheDir && fs.existsSync(cacheDir)) {
@@ -525,6 +536,7 @@ async function main() {
       core.endGroup();
     }
 
+    core.startGroup("SSH Config");
     const sshDir = path.join(process.env["HOME"], ".ssh");
     if (!fs.existsSync(sshDir)) {
       fs.mkdirSync(sshDir, { recursive: true });
@@ -550,6 +562,7 @@ async function main() {
       core.info("SSH config content:");
       core.info(fs.readFileSync(sshConfigPath, "utf8"));
     }
+    core.endGroup();
 
     const sshConfig = {
       host: sshHost,

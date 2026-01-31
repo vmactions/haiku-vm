@@ -2,6 +2,7 @@
   "name": "vmactions-Haiku",
   "version": "",
   "description": "GitHub actions for Haiku",
+  "type": "module",
   "main": "index.js",
   "repository": {
     "type": "git",
