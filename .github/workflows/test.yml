@@ -29,7 +29,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", ""]
+        release: [ "r1beta5"
+, ""]
         arch: [ "aarch64", "", "riscv64"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         exclude:
@@ -98,7 +99,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@d3ad9133f4ba70209bc9f26b8db738c10d7d346f
+      uses: vmactions/haiku-vm@c63883f206c4791f7f76d23c038bd0aa4509d81f
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -171,7 +172,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", ""]
+        release: [ "r1beta5"
+, ""]
         arch: [ "aarch64", "", "riscv64"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         exclude:
@@ -239,7 +241,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@d3ad9133f4ba70209bc9f26b8db738c10d7d346f
+      uses: vmactions/haiku-vm@c63883f206c4791f7f76d23c038bd0aa4509d81f
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -313,7 +315,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", ""]
+        release: [ "r1beta5"
+, ""]
         arch: [ "aarch64", "", "riscv64"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         exclude:
@@ -376,7 +379,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@d3ad9133f4ba70209bc9f26b8db738c10d7d346f
+      uses: vmactions/haiku-vm@c63883f206c4791f7f76d23c038bd0aa4509d81f
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -439,7 +442,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", ""]
+        release: [ "r1beta5"
+, ""]
         arch: [ "aarch64", "", "riscv64"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         disableCache: [ "", "true"]
@@ -501,7 +505,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@d3ad9133f4ba70209bc9f26b8db738c10d7d346f
+      uses: vmactions/haiku-vm@c63883f206c4791f7f76d23c038bd0aa4509d81f
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
