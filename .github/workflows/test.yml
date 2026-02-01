@@ -99,7 +99,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@07e3e7bf33496e283cbff1421b874a765214c751
+      uses: vmactions/haiku-vm@8c3ebd41a4446322789c31ddf02ff9d27b68329f
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -241,7 +241,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@07e3e7bf33496e283cbff1421b874a765214c751
+      uses: vmactions/haiku-vm@8c3ebd41a4446322789c31ddf02ff9d27b68329f
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -379,7 +379,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@07e3e7bf33496e283cbff1421b874a765214c751
+      uses: vmactions/haiku-vm@8c3ebd41a4446322789c31ddf02ff9d27b68329f
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -505,7 +505,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@07e3e7bf33496e283cbff1421b874a765214c751
+      uses: vmactions/haiku-vm@8c3ebd41a4446322789c31ddf02ff9d27b68329f
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
