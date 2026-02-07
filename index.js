@@ -335,6 +335,7 @@ async function main() {
     const syncTime = core.getInput("sync-time").toLowerCase();
     const disableCache = core.getInput("disable-cache").toLowerCase() === 'true';
     const debugOnError = core.getInput("debug-on-error").toLowerCase() === 'true';
+    const vncPassword = core.getInput("vnc-password");
 
     const work = path.join(process.env["HOME"], "work");
     let vmwork = path.join(process.env["HOME"], "work");
@@ -559,6 +560,9 @@ async function main() {
       args.push("--remote-vnc");
       args.push("--accept-vm-ssh");
       args.push("--remote-vnc-link-file", remoteVncLinkFile);
+      if (vncPassword) {
+        args.push("--vnc-password", vncPassword);
+      }
 
     } else {
       args.push("--vnc", "off");
