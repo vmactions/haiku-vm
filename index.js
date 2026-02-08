@@ -147,7 +147,7 @@ async function execSSH(cmd, sshConfig, ignoreReturn = false, silent = false) {
 
   try {
     // Pipe prefix exports + command to sh stdin
-    const fullCmd = envExports + cmd;
+    const fullCmd = "set -eu\n" + envExports + cmd;
     await exec.exec("ssh", [...args, sshHost, "sh"], {
       input: Buffer.from(fullCmd),
       silent: silent
