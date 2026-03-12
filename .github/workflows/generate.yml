@@ -53,8 +53,14 @@ jobs:
             base-vm/index.js : index.js
             base-vm/action.yml : action.yml
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Update node_modules
         run: |
+          node -v
           [ -e "node_modules" ] && git rm -r node_modules
           npm install --save
           git add node_modules
