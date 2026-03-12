@@ -94,20 +94,28 @@ jobs:
             #modify test.yml
             sed -i "s/$oldHash/$newHash/g" .github/workflows/test.yml
           fi
-      - uses: EndBug/add-and-commit@v9
-        with:
-          message: "Update ${{ github.repository }} from base vm"
-          pull: '--rebase --autostash '
-          add: |
-            .github/workflows/readme.yml
-            .github/workflows/major.yml
-            .github/workflows/manual.yml
-            .github/workflows/test.yml
-            .github/tpl/README.tpl.md
-            .github/FUNDING.yml
-            package.json
-            package-lock.json
-            index.js
-            action.yml
+      - name: Commit and push changes
+        run: |
+          git config user.email "ghactions@vmactions.org"
+          git config user.name "Generate.yml"
+          git add \
+            .github/workflows/readme.yml \
+            .github/workflows/major.yml \
+            .github/workflows/manual.yml \
+            .github/workflows/test.yml \
+            .github/tpl/README.tpl.md \
+            .github/FUNDING.yml \
+            package.json \
+            package-lock.json \
+            index.js \
+            action.yml \
             node_modules
+          if git diff --cached --quiet; then
+            echo "Nothing to commit, skipping push"
+          else
+            git commit -m "Update ${{ github.repository }} from base vm"
+            git pull --rebase --autostash
+            git push
+          fi
+
 
