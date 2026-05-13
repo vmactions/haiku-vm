@@ -98,7 +98,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@38dff6363dd255105a60906cefeec3354a716632
+      uses: vmactions/haiku-vm@df7327caa5a7d1979d49f46dc75ef27170038dcc
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -233,7 +233,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@38dff6363dd255105a60906cefeec3354a716632
+      uses: vmactions/haiku-vm@df7327caa5a7d1979d49f46dc75ef27170038dcc
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -369,7 +369,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@38dff6363dd255105a60906cefeec3354a716632
+      uses: vmactions/haiku-vm@df7327caa5a7d1979d49f46dc75ef27170038dcc
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -494,7 +494,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@38dff6363dd255105a60906cefeec3354a716632
+      uses: vmactions/haiku-vm@df7327caa5a7d1979d49f46dc75ef27170038dcc
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -623,7 +623,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@38dff6363dd255105a60906cefeec3354a716632
+      uses: vmactions/haiku-vm@df7327caa5a7d1979d49f46dc75ef27170038dcc
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -695,7 +695,7 @@ jobs:
     - name: Test in Haiku
       id: testerr
       continue-on-error: true 
-      uses: vmactions/haiku-vm@38dff6363dd255105a60906cefeec3354a716632
+      uses: vmactions/haiku-vm@df7327caa5a7d1979d49f46dc75ef27170038dcc
       with:
         usesh: true
         debug: true
@@ -723,7 +723,7 @@ jobs:
     - name: Test in Haiku
       id: testpass
       continue-on-error: true 
-      uses: vmactions/haiku-vm@38dff6363dd255105a60906cefeec3354a716632
+      uses: vmactions/haiku-vm@df7327caa5a7d1979d49f46dc75ef27170038dcc
       with:
         usesh: true
         debug: true
