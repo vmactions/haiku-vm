@@ -98,7 +98,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@3b09345e97a4805e0484573ee49fd4e18c4cc453
+      uses: vmactions/haiku-vm@7538a5622076e234798ff922d861bf501097f2b4
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -113,6 +113,7 @@ jobs:
           udp:"8081": "80"
         usesh: true
         debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
         sync: sshfs
         run: |
           set -e
@@ -233,7 +234,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@3b09345e97a4805e0484573ee49fd4e18c4cc453
+      uses: vmactions/haiku-vm@7538a5622076e234798ff922d861bf501097f2b4
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -248,6 +249,7 @@ jobs:
           udp:"8081": "80"
         usesh: true
         debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
         sync: nfs
         run: |
           ls -lah $HOME/work
@@ -369,7 +371,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@3b09345e97a4805e0484573ee49fd4e18c4cc453
+      uses: vmactions/haiku-vm@7538a5622076e234798ff922d861bf501097f2b4
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -384,6 +386,7 @@ jobs:
           udp:"8081": "80"
         usesh: true
         debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
         sync: scp
         run: |
           ls -lah $HOME/work
@@ -494,7 +497,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@3b09345e97a4805e0484573ee49fd4e18c4cc453
+      uses: vmactions/haiku-vm@7538a5622076e234798ff922d861bf501097f2b4
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -509,6 +512,7 @@ jobs:
           udp:"8081": "80"
         usesh: true
         debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
         disable-cache: ${{ matrix.disableCache }}
         run: |
           env
@@ -623,7 +627,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ steps.check.outputs.run == 'true' }}
       id: test
-      uses: vmactions/haiku-vm@3b09345e97a4805e0484573ee49fd4e18c4cc453
+      uses: vmactions/haiku-vm@7538a5622076e234798ff922d861bf501097f2b4
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -638,6 +642,7 @@ jobs:
           udp:"8081": "80"
         usesh: true
         debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
         custom-shell-name: vmsh
         run: |
           env
@@ -695,7 +700,7 @@ jobs:
     - name: Test in Haiku
       id: testerr
       continue-on-error: true 
-      uses: vmactions/haiku-vm@3b09345e97a4805e0484573ee49fd4e18c4cc453
+      uses: vmactions/haiku-vm@7538a5622076e234798ff922d861bf501097f2b4
       with:
         usesh: true
         debug: true
@@ -723,7 +728,7 @@ jobs:
     - name: Test in Haiku
       id: testpass
       continue-on-error: true 
-      uses: vmactions/haiku-vm@3b09345e97a4805e0484573ee49fd4e18c4cc453
+      uses: vmactions/haiku-vm@7538a5622076e234798ff922d861bf501097f2b4
       with:
         usesh: true
         debug: true
