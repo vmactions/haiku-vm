@@ -117,6 +117,63 @@ function downloadFile(url, dest) {
   });
 }
 
+// Run `ssh ... sh` once, piping `input` to its stdin. Returns the exit code.
+// If timeoutMs > 0 and the ssh process has not exited by then, it is killed
+// (SIGTERM, then SIGKILL after a short grace) and the promise rejects with a
+// timeout error. We spawn directly instead of using exec.exec() because
+// @actions/exec 1.1.1 silently ignores the AbortSignal option, so it cannot
+// interrupt a wedged ssh session (observed: Haiku ssh occasionally prints its
+// output but never tears down the channel, hanging the job for the GHA 6h max;
+// see haiku-vm run 71585652274).
+function runSSHOnce(args, sshHost, input, silent, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const child = spawn("ssh", [...args, sshHost, "sh"], { stdio: ["pipe", "pipe", "pipe"] });
+    let settled = false;
+    let timedOut = false;
+    let overallTimer = null;
+    let killTimer = null;
+
+    const cleanup = () => {
+      if (overallTimer) clearTimeout(overallTimer);
+      if (killTimer) clearTimeout(killTimer);
+    };
+
+    if (timeoutMs > 0) {
+      overallTimer = setTimeout(() => {
+        timedOut = true;
+        try { child.kill("SIGTERM"); } catch (e) { /* already gone */ }
+        // Escalate if ssh does not die promptly.
+        killTimer = setTimeout(() => { try { child.kill("SIGKILL"); } catch (e) { /* already gone */ } }, 5000);
+      }, timeoutMs);
+    }
+
+    child.stdout.on("data", (d) => { if (!silent) process.stdout.write(d); });
+    child.stderr.on("data", (d) => { if (!silent) process.stderr.write(d); });
+
+    child.on("error", (err) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(err);
+    });
+    child.on("close", (code) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      if (timedOut) {
+        reject(new Error(`ssh timed out after ${timeoutMs}ms`));
+      } else {
+        resolve(code == null ? 1 : code);
+      }
+    });
+
+    // Feed the command script to ssh stdin and close it so the remote sh sees EOF.
+    child.stdin.on("error", () => { /* ignore EPIPE if ssh already exited */ });
+    child.stdin.write(input);
+    child.stdin.end();
+  });
+}
+
 async function execSSH(cmd, sshConfig, ignoreReturn = false, silent = false, options = {}) {
   core.info(`Exec SSH: ${cmd}`);
 
@@ -152,28 +209,20 @@ async function execSSH(cmd, sshConfig, ignoreReturn = false, silent = false, opt
 
   // Pipe prefix exports + command to sh stdin
   const fullCmd = "set -eu\n" + envExports + cmd;
+  const input = Buffer.from(fullCmd);
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt++) {
-    const controller = timeoutMs > 0 ? new AbortController() : null;
-    const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
     try {
-      const execOpts = {
-        input: Buffer.from(fullCmd),
-        silent: silent,
-      };
-      if (controller) execOpts.signal = controller.signal;
-      await exec.exec("ssh", [...args, sshHost, "sh"], execOpts);
-      return;
+      const code = await runSSHOnce(args, sshHost, input, silent, timeoutMs);
+      if (code === 0) {
+        return;
+      }
+      lastErr = new Error(`ssh exited with code ${code}`);
     } catch (err) {
       lastErr = err;
-      const wasTimeout = controller && controller.signal.aborted;
-      if (attempt < retries) {
-        const reason = wasTimeout ? `timed out after ${timeoutMs}ms` : `failed: ${err && err.message}`;
-        core.warning(`SSH ${reason}, retrying (${attempt + 1}/${retries})...`);
-        continue;
-      }
-    } finally {
-      if (timer) clearTimeout(timer);
+    }
+    if (attempt < retries) {
+      core.warning(`SSH ${lastErr && lastErr.message}, retrying (${attempt + 1}/${retries})...`);
     }
   }
   if (!ignoreReturn) {
