@@ -1,0 +1,24 @@
+          - release: "r1beta5"
+            arch: aarch64
+          - release: "r1beta5"
+            arch: riscv64
+          - release: "r1beta5"
+            arch: powerpc64
+          - release: "r1beta5"
+            arch: sparc64
+          - release: "r1beta5"
+            arch: ppc64le
+          - release: "r1beta5"
+            arch: s390x
+          - release: ""
+            arch: aarch64
+          - release: ""
+            arch: riscv64
+          - release: ""
+            arch: powerpc64
+          - release: ""
+            arch: sparc64
+          - release: ""
+            arch: ppc64le
+          - release: ""
+            arch: s390x
