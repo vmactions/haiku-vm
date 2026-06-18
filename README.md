@@ -1,7 +1,6 @@
 # Run GitHub CI in Haiku 
 
 ![Test](https://github.com/vmactions/haiku-vm/workflows/Test/badge.svg)
-[![Release](https://img.shields.io/github/v/release/vmactions/haiku-vm?include_prereleases&sort=semver&display_name=tag)](https://github.com/vmactions/haiku-vm/releases)
 
 
 
@@ -368,8 +367,7 @@ We use Qemu to run the Haiku VM.
 
 # Upcoming features:
 
-1. Support other architectures, eg: sparc64 or powerpc64.
-2. Support MacOS runner and Windows runner.
+1. Support MacOS runner and Windows runner.
 
 
 
