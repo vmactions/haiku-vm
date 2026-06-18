@@ -17,7 +17,7 @@ on:
 
 
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -25,26 +25,27 @@ concurrency:
 
 jobs:
   testsshfs:
-    if: ${{ !contains(github.repository, 'dragonflybsd') && !contains(github.repository, 'solaris') && !contains(github.repository, 'omnios') && !contains(github.repository, 'haiku') && !contains(github.repository, 'tribblix') && !contains(github.repository, 'blissos')}}
     strategy:
       fail-fast: false
       matrix:
         release: [ "r1beta5"
 , ""]
-        arch: [ "aarch64", "", "riscv64"]
+        arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         exclude:
           - runs: "ubuntu-24.04-arm"
             arch: ""
           - runs: "ubuntu-24.04-arm"
             arch: "riscv64"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04-arm"
-          - arch: "riscv64"
-            runs: "ubuntu-24.04"
-
+          - runs: "ubuntu-24.04-arm"
+            arch: "powerpc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "sparc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "ppc64le"
+          - runs: "ubuntu-24.04-arm"
+            arch: "s390x"
+          # Manual matrix excludes only; combos with no conf are auto-excluded.
 
 
     runs-on: ${{ matrix.runs }}
@@ -56,39 +57,8 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - uses: actions/checkout@v6
-    - name: Check arch
-      id: check
-      run: |
-        _release="${{ matrix.release }}"
-        if [ -z "$_release" ]; then
-          . conf/default.release.conf
-          _release="$DEFAULT_RELEASE"
-        fi
-
-        _arch="${{ matrix.arch }}"
-        if [ "${_arch}" = "x86_64" ]; then
-          _arch=""
-        fi
-
-        if [ -z "${_arch}" ]; then
-          #ok, go ahead
-          echo "arch is empty"
-          echo "run=true" >> $GITHUB_OUTPUT
-        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
-          echo "conf exists: conf/${_release}-${_arch}.conf"
-          #ok, go ahead
-          if [[ "$(echo "Haiku" | tr '[:upper:]' '[:lower:]')-${_arch}" == "freebsd-riscv64" ]]; then
-            echo "The Haiku-${_arch} doesn't support sshfs, skip."
-            echo "run=false" >> $GITHUB_OUTPUT
-          else
-            echo "run=true" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "The release ${_release} doesn't support ${_arch}, skip."
-          echo "run=false" >> $GITHUB_OUTPUT
-        fi
 #    - name: Creating Web console
-#      if: ${{ steps.check.outputs.run == 'true' }}
+#      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
 #      uses: vmactions/cf-tunnel@v0
 #      id: tunnel
 #      with:
@@ -96,9 +66,9 @@ jobs:
 #        port: 8000
 
     - name: Test in Haiku
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
       id: test
-      uses: vmactions/haiku-vm@875e4d0b1b872ec144dcf30b5e6410a89ab211cb
+      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -137,7 +107,7 @@ jobs:
           echo "OK"
 
     - name: Test NAT
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
       env:
         VM_USER: "user"
       run: |
@@ -146,7 +116,7 @@ jobs:
         [ "$TEST_ENV" = "abc" ]
         ssh -v -p 20022 ${VM_USER:-root}@localhost  "uname -a;whoami;pwd"
     - name: Test custom shell
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
       shell: haiku {0}
       run: |
         pwd
@@ -168,26 +138,27 @@ jobs:
 
 
   testnfs:
-    if: ${{!contains(github.repository, 'haiku') && !contains(github.repository, 'blissos')}}
     strategy:
       fail-fast: false
       matrix:
         release: [ "r1beta5"
 , ""]
-        arch: [ "aarch64", "", "riscv64"]
+        arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         exclude:
           - runs: "ubuntu-24.04-arm"
             arch: ""
           - runs: "ubuntu-24.04-arm"
             arch: "riscv64"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04-arm"
-          - arch: "riscv64"
-            runs: "ubuntu-24.04"
-
+          - runs: "ubuntu-24.04-arm"
+            arch: "powerpc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "sparc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "ppc64le"
+          - runs: "ubuntu-24.04-arm"
+            arch: "s390x"
+          # Manual matrix excludes only; combos with no conf are auto-excluded.
 
 
     runs-on: ${{ matrix.runs }}
@@ -199,42 +170,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - uses: actions/checkout@v6
-    - name: Check arch
-      id: check
-      run: |
-        _release="${{ matrix.release }}"
-        if [ -z "$_release" ]; then
-          . conf/default.release.conf
-          _release="$DEFAULT_RELEASE"
-        fi
-
-        _arch="${{ matrix.arch }}"
-        if [ "${_arch}" = "x86_64" ]; then
-          _arch=""
-        fi
-
-        if [ -z "${_arch}" ]; then
-          #ok, go ahead
-          echo "arch is empty"
-          echo "run=true" >> $GITHUB_OUTPUT
-        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
-          #ok, go ahead
-          echo "conf exists: conf/${_release}-${_arch}.conf"
-          if [[ "$(echo "Haiku" | tr '[:upper:]' '[:lower:]')-${_arch}" == "freebsd-riscv64" ]]; then
-            echo "The Haiku-${_arch} doesn't support nfs, skip."
-            echo "run=false" >> $GITHUB_OUTPUT
-          else
-            echo "run=true" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "The release ${_release} doesn't support ${_arch}, skip."
-          echo "run=false" >> $GITHUB_OUTPUT
-        fi
-
     - name: Test in Haiku
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'nfs') }}
       id: test
-      uses: vmactions/haiku-vm@875e4d0b1b872ec144dcf30b5e6410a89ab211cb
+      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -273,7 +212,7 @@ jobs:
           echo "OK"
 
     - name: Test NAT
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'nfs') }}
       env:
         VM_USER: "user"
       run: |
@@ -285,7 +224,7 @@ jobs:
         [ "$TEST_ENV" = "abc" ]
         ssh -v -p 20022 ${VM_USER:-root}@localhost "uname -a;whoami;pwd"
     - name: Test custom shell
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'nfs') }}
       shell: haiku {0}
       run: |
         pwd
@@ -310,20 +249,22 @@ jobs:
       matrix:
         release: [ "r1beta5"
 , ""]
-        arch: [ "aarch64", "", "riscv64"]
+        arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         exclude:
           - runs: "ubuntu-24.04-arm"
             arch: ""
           - runs: "ubuntu-24.04-arm"
             arch: "riscv64"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04-arm"
-          - arch: "riscv64"
-            runs: "ubuntu-24.04"
-
+          - runs: "ubuntu-24.04-arm"
+            arch: "powerpc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "sparc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "ppc64le"
+          - runs: "ubuntu-24.04-arm"
+            arch: "s390x"
+          # Manual matrix excludes only; combos with no conf are auto-excluded.
 
 
     runs-on: ${{ matrix.runs }}
@@ -335,43 +276,17 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - uses: actions/checkout@v6
-    - name: Check arch
-      id: check
-      run: |
-        _release="${{ matrix.release }}"
-        if [ -z "$_release" ]; then
-          . conf/default.release.conf
-          _release="$DEFAULT_RELEASE"
-        fi
-
-        _arch="${{ matrix.arch }}"
-        if [ "${_arch}" = "x86_64" ]; then
-          _arch=""
-        fi
-
-        if [ -z "${_arch}" ]; then
-          #ok, go ahead
-          echo "arch is empty"
-          echo "run=true" >> $GITHUB_OUTPUT
-        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
-          #ok, go ahead
-          echo "conf exists: conf/${_release}-${_arch}.conf"
-          echo "run=true" >> $GITHUB_OUTPUT
-        else
-          echo "The release ${_release} doesn't support ${_arch}, skip."
-          echo "run=false" >> $GITHUB_OUTPUT
-        fi
 #    - name: Creating Web console
-#      if: ${{ steps.check.outputs.run == 'true' }}
+#      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'scp') }}
 #      uses: vmactions/cf-tunnel@v0
 #      id: tunnel
 #      with:
 #        protocol: http
 #        port: 8000
     - name: Test in Haiku
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'scp') }}
       id: test
-      uses: vmactions/haiku-vm@875e4d0b1b872ec144dcf30b5e6410a89ab211cb
+      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -412,7 +327,7 @@ jobs:
           echo "OK"
 
     - name: Test files
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'scp') }}
       env:
         VM_USER: "user"
       run: |
@@ -423,9 +338,6 @@ jobs:
         cat ${GITHUB_ENV}
         echo "TEST_ENV=$TEST_ENV";
         [ "$TEST_ENV" = "abc" ];
-        
-
-
 
 
 
@@ -437,7 +349,7 @@ jobs:
       matrix:
         release: [ "r1beta5"
 , ""]
-        arch: [ "aarch64", "", "riscv64"]
+        arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         disableCache: [ "", "true"]
         exclude:
@@ -445,13 +357,15 @@ jobs:
             arch: ""
           - runs: "ubuntu-24.04-arm"
             arch: "riscv64"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04-arm"
-          - arch: "riscv64"
-            runs: "ubuntu-24.04"
-
+          - runs: "ubuntu-24.04-arm"
+            arch: "powerpc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "sparc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "ppc64le"
+          - runs: "ubuntu-24.04-arm"
+            arch: "s390x"
+          # Manual matrix excludes only; combos with no conf are auto-excluded.
 
 
 
@@ -463,41 +377,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - uses: actions/checkout@v6
-    - name: Check arch
-      id: check
-      run: |
-        _release="${{ matrix.release }}"
-        if [ -z "$_release" ]; then
-          . conf/default.release.conf
-          _release="$DEFAULT_RELEASE"
-        fi
-
-        _arch="${{ matrix.arch }}"
-        if [ "${_arch}" = "x86_64" ]; then
-          _arch=""
-        fi
-
-        if [ -z "${_arch}" ]; then
-          #ok, go ahead
-          echo "arch is empty"
-          echo "run=true" >> $GITHUB_OUTPUT
-        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
-          #ok, go ahead
-          echo "conf exists: conf/${_release}-${_arch}.conf"
-          if [[ "$(echo "Haiku" | tr '[:upper:]' '[:lower:]')-${_arch}" == "freebsd-riscv64" ]]; then
-            echo "The Haiku-${_arch} doesn't support rsync, skip."
-            echo "run=false" >> $GITHUB_OUTPUT
-          else
-            echo "run=true" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "The release ${_release} doesn't support ${_arch}, skip."
-          echo "run=false" >> $GITHUB_OUTPUT
-        fi
     - name: Test in Haiku
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@875e4d0b1b872ec144dcf30b5e6410a89ab211cb
+      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -529,7 +412,7 @@ jobs:
           env
           echo "OK"
     - name: Test NAT
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       env:
         VM_USER: "user"
       run: |
@@ -539,7 +422,7 @@ jobs:
         ssh -v  -p 20022 ${VM_USER:-root}@localhost  "uname -a;whoami;pwd"
 
     - name: Test custom shell
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       shell: haiku {0}
       run: |
         pwd
@@ -561,27 +444,28 @@ jobs:
 
 
 
-
   testcustomshell:
     strategy:
       fail-fast: false
       matrix:
         release: [ "r1beta5"
 , ""]
-        arch: [ "aarch64", "", "riscv64"]
+        arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
         exclude:
           - runs: "ubuntu-24.04-arm"
             arch: ""
           - runs: "ubuntu-24.04-arm"
             arch: "riscv64"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04"
-          - arch: "aarch64"
-            runs: "ubuntu-24.04-arm"
-          - arch: "riscv64"
-            runs: "ubuntu-24.04"
-
+          - runs: "ubuntu-24.04-arm"
+            arch: "powerpc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "sparc64"
+          - runs: "ubuntu-24.04-arm"
+            arch: "ppc64le"
+          - runs: "ubuntu-24.04-arm"
+            arch: "s390x"
+          # Manual matrix excludes only; combos with no conf are auto-excluded.
 
 
 
@@ -593,41 +477,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
     - uses: actions/checkout@v6
-    - name: Check arch
-      id: check
-      run: |
-        _release="${{ matrix.release }}"
-        if [ -z "$_release" ]; then
-          . conf/default.release.conf
-          _release="$DEFAULT_RELEASE"
-        fi
-
-        _arch="${{ matrix.arch }}"
-        if [ "${_arch}" = "x86_64" ]; then
-          _arch=""
-        fi
-
-        if [ -z "${_arch}" ]; then
-          #ok, go ahead
-          echo "arch is empty"
-          echo "run=true" >> $GITHUB_OUTPUT
-        elif [ -e "conf/${_release}-${_arch}.conf" ]; then
-          #ok, go ahead
-          echo "conf exists: conf/${_release}-${_arch}.conf"
-          if [[ "$(echo "Haiku" | tr '[:upper:]' '[:lower:]')-${_arch}" == "freebsd-riscv64" ]]; then
-            echo "The Haiku-${_arch} doesn't support rsync, skip."
-            echo "run=false" >> $GITHUB_OUTPUT
-          else
-            echo "run=true" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "The release ${_release} doesn't support ${_arch}, skip."
-          echo "run=false" >> $GITHUB_OUTPUT
-        fi
     - name: Test in Haiku
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@875e4d0b1b872ec144dcf30b5e6410a89ab211cb
+      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -659,7 +512,7 @@ jobs:
           env
           echo "OK"
     - name: Test NAT
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       env:
         VM_USER: "user"
       run: |
@@ -669,7 +522,7 @@ jobs:
         ssh -v  -p 20022 ${VM_USER:-root}@localhost  "uname -a;whoami;pwd"
 
     - name: Test custom shell
-      if: ${{ steps.check.outputs.run == 'true' }}
+      if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       shell: vmsh {0}
       run: |
         pwd
@@ -699,8 +552,8 @@ jobs:
     - uses: actions/checkout@v6
     - name: Test in Haiku
       id: testerr
-      continue-on-error: true 
-      uses: vmactions/haiku-vm@875e4d0b1b872ec144dcf30b5e6410a89ab211cb
+      continue-on-error: true
+      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
       with:
         usesh: true
         debug: true
@@ -727,8 +580,8 @@ jobs:
     - uses: actions/checkout@v6
     - name: Test in Haiku
       id: testpass
-      continue-on-error: true 
-      uses: vmactions/haiku-vm@875e4d0b1b872ec144dcf30b5e6410a89ab211cb
+      continue-on-error: true
+      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
       with:
         usesh: true
         debug: true
@@ -745,12 +598,3 @@ jobs:
       run: |
         echo "The step was expected to succeed, and it succeeded!"
         exit 0
-
-
-
-
-
-
-
-
-
