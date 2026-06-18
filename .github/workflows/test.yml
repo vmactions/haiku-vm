@@ -68,7 +68,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
       id: test
-      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
+      uses: vmactions/haiku-vm@790e0cf94984f57e8a750006fd8ea8ac1b61a73c
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -173,7 +173,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'nfs') }}
       id: test
-      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
+      uses: vmactions/haiku-vm@790e0cf94984f57e8a750006fd8ea8ac1b61a73c
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -286,7 +286,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'scp') }}
       id: test
-      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
+      uses: vmactions/haiku-vm@790e0cf94984f57e8a750006fd8ea8ac1b61a73c
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -380,7 +380,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
+      uses: vmactions/haiku-vm@790e0cf94984f57e8a750006fd8ea8ac1b61a73c
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -480,7 +480,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
+      uses: vmactions/haiku-vm@790e0cf94984f57e8a750006fd8ea8ac1b61a73c
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -553,7 +553,7 @@ jobs:
     - name: Test in Haiku
       id: testerr
       continue-on-error: true
-      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
+      uses: vmactions/haiku-vm@790e0cf94984f57e8a750006fd8ea8ac1b61a73c
       with:
         usesh: true
         debug: true
@@ -581,7 +581,7 @@ jobs:
     - name: Test in Haiku
       id: testpass
       continue-on-error: true
-      uses: vmactions/haiku-vm@183c6fe518f28d5ff27befc8806b3b52ca9d1a57
+      uses: vmactions/haiku-vm@790e0cf94984f57e8a750006fd8ea8ac1b61a73c
       with:
         usesh: true
         debug: true
