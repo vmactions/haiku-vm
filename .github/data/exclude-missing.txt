@@ -10,6 +10,8 @@
             arch: ppc64le
           - release: "r1beta5"
             arch: s390x
+          - release: "r1beta5"
+            arch: i386
           - release: ""
             arch: aarch64
           - release: ""
@@ -22,3 +24,5 @@
             arch: ppc64le
           - release: ""
             arch: s390x
+          - release: ""
+            arch: i386
