@@ -12,6 +12,8 @@
             arch: s390x
           - release: "r1beta5"
             arch: i386
+          - release: "r1beta5"
+            arch: loongarch64
           - release: ""
             arch: aarch64
           - release: ""
@@ -26,3 +28,5 @@
             arch: s390x
           - release: ""
             arch: i386
+          - release: ""
+            arch: loongarch64
