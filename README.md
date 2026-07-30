@@ -36,11 +36,9 @@ All the supported releases are here:
 
 
 
-| Release | x86_64   |
-|---------|----------|
-| r1beta5 |  ✅ (rsync,scp,nfs,sshfs)     |
-
-
+| Release | x86_64 |
+|---------|---------|
+| r1beta5 | ✅ (rsync,scp,nfs,sshfs) |
 
 
 
