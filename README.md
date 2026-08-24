@@ -40,6 +40,17 @@ All the supported releases are here:
 |---------|---------|
 | r1beta5 | ✅ (rsync,scp,nfs,sshfs,tar) |
 
+How the images are built:
+
+Each image is built automatically in the
+[anyvm-org/haiku-builder](https://github.com/anyvm-org/haiku-builder)
+repo's GitHub Actions: it downloads the official Haiku anyboot ISO from
+a Haiku mirror, boots it in QEMU, runs the Haiku installer unattended,
+enables ssh, pre-installs the packages listed in the conf, and exports
+the installed disk as a compressed qcow2 image.
+
+Upstream install media: the official Haiku release images (download
+page: https://www.haiku-os.org/get-haiku/).
 
 
 
@@ -139,7 +150,7 @@ The code is shared from the host to the VM via `rsync` by default, you can choos
 You can also set `sync: no`, so the files will not be synced to the  VM.
 
 
-When using `rsync` or `scp`,  you can define `copyback: false` to not copy files back from the VM in to the host.
+When using a copy based sync method (`rsync`, `scp`, `tar` or `9p`), you can define `copyback: false` to not copy files back from the VM to the host. It has no effect on `sshfs` and `nfs`, which are live mounts and never copy back.
 
 
 ```yaml
