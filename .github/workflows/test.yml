@@ -40,7 +40,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", "r1beta6"
+        release: [ "r1beta6"
 , ""]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
@@ -64,24 +64,6 @@ jobs:
           - runs: "ubuntu-24.04-arm"
             arch: "armv7"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
-          - release: "r1beta5"
-            arch: aarch64
-          - release: "r1beta5"
-            arch: riscv64
-          - release: "r1beta5"
-            arch: powerpc64
-          - release: "r1beta5"
-            arch: sparc64
-          - release: "r1beta5"
-            arch: ppc64le
-          - release: "r1beta5"
-            arch: s390x
-          - release: "r1beta5"
-            arch: i386
-          - release: "r1beta5"
-            arch: loongarch64
-          - release: "r1beta5"
-            arch: armv7
           - release: "r1beta6"
             arch: aarch64
           - release: "r1beta6"
@@ -140,7 +122,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -235,7 +217,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", "r1beta6"
+        release: [ "r1beta6"
 , ""]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
@@ -259,24 +241,6 @@ jobs:
           - runs: "ubuntu-24.04-arm"
             arch: "armv7"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
-          - release: "r1beta5"
-            arch: aarch64
-          - release: "r1beta5"
-            arch: riscv64
-          - release: "r1beta5"
-            arch: powerpc64
-          - release: "r1beta5"
-            arch: sparc64
-          - release: "r1beta5"
-            arch: ppc64le
-          - release: "r1beta5"
-            arch: s390x
-          - release: "r1beta5"
-            arch: i386
-          - release: "r1beta5"
-            arch: loongarch64
-          - release: "r1beta5"
-            arch: armv7
           - release: "r1beta6"
             arch: aarch64
           - release: "r1beta6"
@@ -327,7 +291,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'nfs') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -423,7 +387,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", "r1beta6"
+        release: [ "r1beta6"
 , ""]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
@@ -447,24 +411,6 @@ jobs:
           - runs: "ubuntu-24.04-arm"
             arch: "armv7"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
-          - release: "r1beta5"
-            arch: aarch64
-          - release: "r1beta5"
-            arch: riscv64
-          - release: "r1beta5"
-            arch: powerpc64
-          - release: "r1beta5"
-            arch: sparc64
-          - release: "r1beta5"
-            arch: ppc64le
-          - release: "r1beta5"
-            arch: s390x
-          - release: "r1beta5"
-            arch: i386
-          - release: "r1beta5"
-            arch: loongarch64
-          - release: "r1beta5"
-            arch: armv7
           - release: "r1beta6"
             arch: aarch64
           - release: "r1beta6"
@@ -522,7 +468,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'scp') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -657,7 +603,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', 'tar') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         mem: 4096
         debug: true
@@ -724,7 +670,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', '9p') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         mem: 4096
         debug: true
@@ -770,7 +716,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", "r1beta6"
+        release: [ "r1beta6"
 , ""]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
@@ -795,24 +741,6 @@ jobs:
           - runs: "ubuntu-24.04-arm"
             arch: "armv7"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
-          - release: "r1beta5"
-            arch: aarch64
-          - release: "r1beta5"
-            arch: riscv64
-          - release: "r1beta5"
-            arch: powerpc64
-          - release: "r1beta5"
-            arch: sparc64
-          - release: "r1beta5"
-            arch: ppc64le
-          - release: "r1beta5"
-            arch: s390x
-          - release: "r1beta5"
-            arch: i386
-          - release: "r1beta5"
-            arch: loongarch64
-          - release: "r1beta5"
-            arch: armv7
           - release: "r1beta6"
             arch: aarch64
           - release: "r1beta6"
@@ -863,7 +791,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -953,7 +881,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        release: [ "r1beta5", "r1beta6"
+        release: [ "r1beta6"
 , ""]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-24.04", "ubuntu-24.04-arm"]
@@ -977,24 +905,6 @@ jobs:
           - runs: "ubuntu-24.04-arm"
             arch: "armv7"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
-          - release: "r1beta5"
-            arch: aarch64
-          - release: "r1beta5"
-            arch: riscv64
-          - release: "r1beta5"
-            arch: powerpc64
-          - release: "r1beta5"
-            arch: sparc64
-          - release: "r1beta5"
-            arch: ppc64le
-          - release: "r1beta5"
-            arch: s390x
-          - release: "r1beta5"
-            arch: i386
-          - release: "r1beta5"
-            arch: loongarch64
-          - release: "r1beta5"
-            arch: armv7
           - release: "r1beta6"
             arch: aarch64
           - release: "r1beta6"
@@ -1045,7 +955,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -1174,7 +1084,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         mem: 4096
         debug: true
@@ -1239,7 +1149,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         mem: 4096
         debug: true
@@ -1320,7 +1230,7 @@ jobs:
     - name: Test in Haiku
       id: testerr
       continue-on-error: true
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         debug: true
         # A command that EXISTS and fails, rather than `false` or a made-up
@@ -1366,7 +1276,7 @@ jobs:
     - name: Test in Haiku
       id: testpass
       continue-on-error: true
-      uses: vmactions/haiku-vm@9d2267ca654827f82bc272c2bfae44444f866505
+      uses: vmactions/haiku-vm@3c8964fed214407dac61f5c0d94d9fe427decde5
       with:
         debug: true
         # No `true` and no double quotes: this body runs on every guest, and
