@@ -1,4 +1,6 @@
           - release: "r1beta5"
             arch: ""
+          - release: "r1beta6"
+            arch: ""
           - release: ""
             arch: ""

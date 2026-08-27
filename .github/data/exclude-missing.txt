@@ -16,6 +16,24 @@
             arch: loongarch64
           - release: "r1beta5"
             arch: armv7
+          - release: "r1beta6"
+            arch: aarch64
+          - release: "r1beta6"
+            arch: riscv64
+          - release: "r1beta6"
+            arch: powerpc64
+          - release: "r1beta6"
+            arch: sparc64
+          - release: "r1beta6"
+            arch: ppc64le
+          - release: "r1beta6"
+            arch: s390x
+          - release: "r1beta6"
+            arch: i386
+          - release: "r1beta6"
+            arch: loongarch64
+          - release: "r1beta6"
+            arch: armv7
           - release: ""
             arch: aarch64
           - release: ""
