@@ -225,7 +225,7 @@ The VM is using all the cpu cores of the host by default, you can use `cpu` opti
 
 ## 5. Select release
 
-It uses [the Haiku r1beta5](conf/default.release.conf) by default, you can use `release` option to use another version of Haiku:
+It uses [the Haiku r1beta6](conf/default.release.conf) by default, you can use `release` option to use another version of Haiku:
 
 ```yaml
 ...
