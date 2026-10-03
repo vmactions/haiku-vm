@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         release: [ "r1beta6"
-, ""]
+ ]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-26.04", "ubuntu-26.04-arm"]
         exclude:
@@ -63,6 +63,11 @@ jobs:
             arch: "loongarch64"
           - runs: "ubuntu-26.04-arm"
             arch: "armv7"
+          # aarch64 on the x86 runner (TCG) is booted by the rsync matrix;
+          # the sync transport itself does not depend on TCG vs KVM, so
+          # these legs only repeat what the ubuntu-26.04-arm legs test.
+          - runs: "ubuntu-26.04"
+            arch: "aarch64"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
           - release: "r1beta6"
             arch: aarch64
@@ -122,7 +127,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -218,7 +223,7 @@ jobs:
       fail-fast: false
       matrix:
         release: [ "r1beta6"
-, ""]
+ ]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-26.04", "ubuntu-26.04-arm"]
         exclude:
@@ -240,6 +245,11 @@ jobs:
             arch: "loongarch64"
           - runs: "ubuntu-26.04-arm"
             arch: "armv7"
+          # aarch64 on the x86 runner (TCG) is booted by the rsync matrix;
+          # the sync transport itself does not depend on TCG vs KVM, so
+          # these legs only repeat what the ubuntu-26.04-arm legs test.
+          - runs: "ubuntu-26.04"
+            arch: "aarch64"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
           - release: "r1beta6"
             arch: aarch64
@@ -291,7 +301,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'nfs') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -388,7 +398,7 @@ jobs:
       fail-fast: false
       matrix:
         release: [ "r1beta6"
-, ""]
+ ]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-26.04", "ubuntu-26.04-arm"]
         exclude:
@@ -410,6 +420,11 @@ jobs:
             arch: "loongarch64"
           - runs: "ubuntu-26.04-arm"
             arch: "armv7"
+          # aarch64 on the x86 runner (TCG) is booted by the rsync matrix;
+          # the sync transport itself does not depend on TCG vs KVM, so
+          # these legs only repeat what the ubuntu-26.04-arm legs test.
+          - runs: "ubuntu-26.04"
+            arch: "aarch64"
           # Manual matrix excludes only; combos with no conf are auto-excluded.
           - release: "r1beta6"
             arch: aarch64
@@ -468,7 +483,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'scp') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -603,7 +618,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', 'tar') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         mem: 4096
         debug: true
@@ -670,7 +685,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', '9p') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         mem: 4096
         debug: true
@@ -717,10 +732,9 @@ jobs:
       fail-fast: false
       matrix:
         release: [ "r1beta6"
-, ""]
+ ]
         arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
         runs: [ "ubuntu-26.04", "ubuntu-26.04-arm"]
-        disableCache: [ "", "true"]
         exclude:
           - runs: "ubuntu-26.04-arm"
             arch: ""
@@ -791,7 +805,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -806,7 +820,6 @@ jobs:
           udp:"8081": "80"
         debug: true
         debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
-        disable-cache: ${{ matrix.disableCache }}
         run: |
           env
           echo "TEST_ENV=abc" >>${GITHUB_ENV}
@@ -875,76 +888,165 @@ jobs:
 
 
 
+  # disable-cache: true, once on the default release/arch. It used to be a
+  # second value in the matrix of the job above, which ran every release/arch
+  # leg twice; whether the cache is skipped does not depend on the release
+  # or arch, and every builder bump changes the cache key, so each image's
+  # download path is still exercised then.
+  testdisablecache:
+    if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', 'rsync') }}
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-26.04
+    name: disable-cache Haiku
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v7
+    - name: Test in Haiku
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
+      id: test
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
+      with:
+        prepare: |
+          pkgman install -y curl
+        mem: 4096
+        debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
+        disable-cache: true
+        run: |
+          pwd
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+    - name: Collect VM debug artifacts
+      if: failure()
+      run: |
+        mkdir -p ./vm-debug-artifacts
+        find /home/runner/work/_actions -type d -name output 2>/dev/null | while read d; do
+          find "$d" -type f \( -name "*.log" -o -name "*.ppm" \) | while read f; do
+            rel="${f#/home/runner/work/_actions/}"
+            mkdir -p "./vm-debug-artifacts/$(dirname "$rel")"
+            cp "$f" "./vm-debug-artifacts/$rel"
+          done
+        done
+        echo "Collected:"
+        find ./vm-debug-artifacts -type f || true
+    - name: Upload VM debug artifacts
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: vm-debug-${{ github.job }}-${{ strategy.job-index }}
+        path: vm-debug-artifacts/
+        retention-days: 7
+        if-no-files-found: ignore
+
+  # 'release' omitted, 'arch' set explicitly: one leg per arch the default
+  # release ships a conf for, with the default sync method. The sync
+  # matrices above only list test.releases, so this is where an omitted
+  # release is resolved to DEFAULT_RELEASE together with a given arch (the
+  # conf/<default>-<arch>.conf lookup). The arch list comes from the conf
+  # files at run time rather than from matrix excludes, so no leg is spawned
+  # for an arch the default release does not have. Keep ARCHES in sync with
+  # generate.tpl.yml, the arch matrices above and CONF_ARCHES in index.js.
+  defaultreleasearches:
+    runs-on: ubuntu-26.04
+    name: default release arches Haiku
+    outputs:
+      arches: ${{ steps.list.outputs.arches }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          conf
+        sparse-checkout-cone-mode: true
+    - name: List the arches of the default release
+      id: list
+      run: |
+        set -e
+        . conf/default.release.conf
+        ARCHES="aarch64 riscv64 powerpc64 sparc64 ppc64le s390x i386 loongarch64 armv7"
+        list=""
+        [ -e "conf/${DEFAULT_RELEASE}.conf" ] && list='"x86_64"'
+        for a in $ARCHES; do
+          if [ -e "conf/${DEFAULT_RELEASE}-${a}.conf" ]; then
+            list="${list:+$list,}\"$a\""
+          fi
+        done
+        echo "default release ${DEFAULT_RELEASE}: [${list}]"
+        echo "arches=[${list}]" >> "$GITHUB_OUTPUT"
+
+  testdefaultrelease:
+    needs: defaultreleasearches
+    if: ${{ needs.defaultreleasearches.outputs.arches != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ${{ fromJSON(needs.defaultreleasearches.outputs.arches) }}
+    # aarch64 on the arm runner (KVM); booting it under TCG on the x86 runner
+    # is covered by the rsync default matrix.
+    runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-26.04-arm' || 'ubuntu-26.04' }}
+    name: default release Haiku
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    # This job runs on every guest, agent guests included, so it follows
+    # testpass: a sparse checkout (small push payload) and a bare echo that
+    # sh, rc, cmd.exe and ion all accept, with no prepare.
+    - uses: actions/checkout@v7
+      with:
+        sparse-checkout: |
+          conf
+          .github
+        sparse-checkout-cone-mode: true
+    - name: Test in Haiku
+      id: test
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
+      with:
+        arch: ${{ matrix.arch }}
+        debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
+        run: |
+          echo this is a normal command
+    - name: Collect VM debug artifacts
+      if: failure()
+      run: |
+        mkdir -p ./vm-debug-artifacts
+        find /home/runner/work/_actions -type d -name output 2>/dev/null | while read d; do
+          find "$d" -type f \( -name "*.log" -o -name "*.ppm" \) | while read f; do
+            rel="${f#/home/runner/work/_actions/}"
+            mkdir -p "./vm-debug-artifacts/$(dirname "$rel")"
+            cp "$f" "./vm-debug-artifacts/$rel"
+          done
+        done
+        echo "Collected:"
+        find ./vm-debug-artifacts -type f || true
+    - name: Upload VM debug artifacts
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: vm-debug-${{ github.job }}-${{ strategy.job-index }}
+        path: vm-debug-artifacts/
+        retention-days: 7
+        if-no-files-found: ignore
+
   # Two-level sync gating -- see the comment above testsshfs.
+  # Single job on the default release/arch: envs, nat and the custom shell
+  # are action-side features, not per-release or per-arch ones, so a full
+  # matrix only multiplied the runner time.
   testcustomshell:
     if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', 'rsync') }}
     strategy:
       fail-fast: false
-      matrix:
-        release: [ "r1beta6"
-, ""]
-        arch: [ "aarch64", "", "riscv64", "powerpc64", "sparc64", "ppc64le", "s390x", "i386", "loongarch64", "armv7"]
-        runs: [ "ubuntu-26.04", "ubuntu-26.04-arm"]
-        exclude:
-          - runs: "ubuntu-26.04-arm"
-            arch: ""
-          - runs: "ubuntu-26.04-arm"
-            arch: "riscv64"
-          - runs: "ubuntu-26.04-arm"
-            arch: "powerpc64"
-          - runs: "ubuntu-26.04-arm"
-            arch: "sparc64"
-          - runs: "ubuntu-26.04-arm"
-            arch: "ppc64le"
-          - runs: "ubuntu-26.04-arm"
-            arch: "s390x"
-          - runs: "ubuntu-26.04-arm"
-            arch: "i386"
-          - runs: "ubuntu-26.04-arm"
-            arch: "loongarch64"
-          - runs: "ubuntu-26.04-arm"
-            arch: "armv7"
-          # Manual matrix excludes only; combos with no conf are auto-excluded.
-          - release: "r1beta6"
-            arch: aarch64
-          - release: "r1beta6"
-            arch: riscv64
-          - release: "r1beta6"
-            arch: powerpc64
-          - release: "r1beta6"
-            arch: sparc64
-          - release: "r1beta6"
-            arch: ppc64le
-          - release: "r1beta6"
-            arch: s390x
-          - release: "r1beta6"
-            arch: i386
-          - release: "r1beta6"
-            arch: loongarch64
-          - release: "r1beta6"
-            arch: armv7
-          - release: ""
-            arch: aarch64
-          - release: ""
-            arch: riscv64
-          - release: ""
-            arch: powerpc64
-          - release: ""
-            arch: sparc64
-          - release: ""
-            arch: ppc64le
-          - release: ""
-            arch: s390x
-          - release: ""
-            arch: i386
-          - release: ""
-            arch: loongarch64
-          - release: ""
-            arch: armv7
-
-
-
-    runs-on: ${{ matrix.runs }}
+    runs-on: ubuntu-26.04
     name: customshell Haiku
     env:
       MYTOKEN : ${{ secrets.MYTOKEN }}
@@ -953,16 +1055,14 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Test in Haiku
-      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
           pkgman install -y curl
         mem: 4096
-        release: ${{ matrix.release }}
-        arch: ${{ matrix.arch }}
         nat: |
           "20022": "22"
           "8080": "80"
@@ -986,7 +1086,7 @@ jobs:
           env
           echo "OK"
     - name: Test NAT
-      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       env:
         VM_USER: "user"
       run: |
@@ -996,7 +1096,7 @@ jobs:
         ssh -v  -p 20022 ${VM_USER:-root}@localhost  "uname -a;whoami;pwd"
 
     - name: Test custom shell
-      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       shell: vmsh {0}
       run: |
         pwd
@@ -1017,17 +1117,17 @@ jobs:
     # its guest gets no GITHUB_WORKSPACE (SendEnv excluded), so the custom
     # shell does not run in the synced work tree.
     - name: Prepare custom shell sync test file on host
-      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') && !contains(github.repository, 'haiku') }}
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') && !contains(github.repository, 'haiku') }}
       run: |
         echo "host-data" > hostfile.txt
     - name: Test custom shell file sync
-      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') && !contains(github.repository, 'haiku') }}
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') && !contains(github.repository, 'haiku') }}
       shell: vmsh {0}
       run: |
         [ "$(cat hostfile.txt)" = "host-data" ]
         echo "vm-data" > vmfile.txt
     - name: Verify custom shell copyback on host
-      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') && !contains(github.repository, 'haiku') }}
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') && !contains(github.repository, 'haiku') }}
       run: |
         set -e
         [ "$(cat vmfile.txt)" = "vm-data" ]
@@ -1084,7 +1184,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         mem: 4096
         debug: true
@@ -1149,7 +1249,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         mem: 4096
         debug: true
@@ -1205,6 +1305,149 @@ jobs:
         retention-days: 7
         if-no-files-found: ignore
 
+  # cache-after-prepare-key-suffix (optional): same seed/hit pair as above,
+  # but with a key suffix built from a hashFiles() expression, the documented
+  # way to tie the prepared image to a file that 'prepare' depends on. Kept
+  # separate so the pair above still shows that cache-after-prepare needs no
+  # key suffix.
+  # Chained after it for the same reason the pair above runs last: no
+  # concurrent cache saves while seed and hit run back to back.
+  testkeysuffix:
+    needs: testcacheafterpreparehit
+    if: ${{ !cancelled() }}
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-26.04
+    name: cache-after-prepare key-suffix seed Haiku
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v7
+    # hashFiles() returns an empty string when nothing matches; the key would
+    # then be a bare "test-" and the expression path would go untested.
+    - name: Check the key suffix hash
+      run: |
+        echo "hashFiles: ${{ hashFiles('.github/data/datafile.ini') }}"
+        [ -n "${{ hashFiles('.github/data/datafile.ini') }}" ]
+    - name: Test in Haiku
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
+      id: test
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
+      with:
+        mem: 4096
+        debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
+        cache-after-prepare: true
+        cache-after-prepare-key-suffix: test-${{ hashFiles('.github/data/datafile.ini') }}
+        prepare: |
+          pkgman install -y curl
+          echo prepared >> "$HOME/.cache_after_prepare_count"
+        run: |
+          set -e
+          [ "$(grep -c prepared "$HOME/.cache_after_prepare_count")" -eq 1 ]
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+    - name: Collect VM debug artifacts
+      if: failure()
+      run: |
+        mkdir -p ./vm-debug-artifacts
+        find /home/runner/work/_actions -type d -name output 2>/dev/null | while read d; do
+          find "$d" -type f \( -name "*.log" -o -name "*.ppm" \) | while read f; do
+            rel="${f#/home/runner/work/_actions/}"
+            mkdir -p "./vm-debug-artifacts/$(dirname "$rel")"
+            cp "$f" "./vm-debug-artifacts/$rel"
+          done
+        done
+        echo "Collected:"
+        find ./vm-debug-artifacts -type f || true
+    - name: Upload VM debug artifacts
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: vm-debug-${{ github.job }}-${{ strategy.job-index }}
+        path: vm-debug-artifacts/
+        retention-days: 7
+        if-no-files-found: ignore
+
+  testkeysuffixhit:
+    needs: testkeysuffix
+    # Only the seed's own result matters (see testcacheafterpreparehit).
+    if: ${{ !cancelled() && needs.testkeysuffix.result == 'success' }}
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-26.04
+    name: cache-after-prepare key-suffix hit Haiku
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v7
+    # The inputs (notably 'prepare', 'cache-after-prepare-key-suffix' and the
+    # sync method) must be byte-identical to the seed job above: they all go
+    # into the key.
+    - name: Test in Haiku
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
+      id: test
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
+      with:
+        mem: 4096
+        debug: true
+        debug-on-error: ${{ vars.DEBUG_ON_ERROR }}
+        cache-after-prepare: true
+        cache-after-prepare-key-suffix: test-${{ hashFiles('.github/data/datafile.ini') }}
+        prepare: |
+          pkgman install -y curl
+          echo prepared >> "$HOME/.cache_after_prepare_count"
+        run: |
+          set -e
+          [ "$(grep -c prepared "$HOME/.cache_after_prepare_count")" -eq 1 ]
+          if [ -n "test" ]; then
+            echo "false"
+          fi
+          if [ "test" ]; then
+            echo "test"
+          fi
+          pwd
+          ls -lah
+          whoami
+          env
+          echo "OK"
+    - name: Verify prepare was skipped
+      if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
+      run: |
+        set -e
+        echo "cache-after-prepare-hit=${{ steps.test.outputs.cache-after-prepare-hit }}"
+        [ "${{ steps.test.outputs.cache-after-prepare-hit }}" = "true" ]
+    - name: Collect VM debug artifacts
+      if: failure()
+      run: |
+        mkdir -p ./vm-debug-artifacts
+        find /home/runner/work/_actions -type d -name output 2>/dev/null | while read d; do
+          find "$d" -type f \( -name "*.log" -o -name "*.ppm" \) | while read f; do
+            rel="${f#/home/runner/work/_actions/}"
+            mkdir -p "./vm-debug-artifacts/$(dirname "$rel")"
+            cp "$f" "./vm-debug-artifacts/$rel"
+          done
+        done
+        echo "Collected:"
+        find ./vm-debug-artifacts -type f || true
+    - name: Upload VM debug artifacts
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: vm-debug-${{ github.job }}-${{ strategy.job-index }}
+        path: vm-debug-artifacts/
+        retention-days: 7
+        if-no-files-found: ignore
+
   # Skipped on RISC OS: its guest agent is not a shell and has no status
   # channel at all, so anyvm can only report that a command COMPLETED, never
   # whether it succeeded. A test whose whole point is "this must come back
@@ -1230,7 +1473,7 @@ jobs:
     - name: Test in Haiku
       id: testerr
       continue-on-error: true
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         debug: true
         # A command that EXISTS and fails, rather than `false` or a made-up
@@ -1276,7 +1519,7 @@ jobs:
     - name: Test in Haiku
       id: testpass
       continue-on-error: true
-      uses: vmactions/haiku-vm@02ba1c84a97f46227ca2ba861d55a47ec1de1b8f
+      uses: vmactions/haiku-vm@b9ff99b92538d25e89be54afab83a1902b88a593
       with:
         debug: true
         # No `true` and no double quotes: this body runs on every guest, and
