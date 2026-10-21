@@ -109,7 +109,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'sshfs') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -265,7 +265,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'nfs') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -480,7 +480,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'scp') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         envs: 'DEBUG MYTOKEN MYTOKEN2'
         prepare: |
@@ -615,7 +615,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', 'tar') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         mem: 4096
         debug: true
@@ -682,7 +682,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}', '9p') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         mem: 4096
         debug: true
@@ -784,7 +784,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')[matrix.arch == '' && 'x86_64' || matrix.arch], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -885,7 +885,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         prepare: |
           pkgman install -y curl
@@ -988,7 +988,7 @@ jobs:
         sparse-checkout-cone-mode: true
     - name: Test in Haiku
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         arch: ${{ matrix.arch }}
         debug: true
@@ -1036,7 +1036,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         envs: 'MYTOKEN MYTOKEN2'
         prepare: |
@@ -1163,7 +1163,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         mem: 4096
         debug: true
@@ -1228,7 +1228,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         mem: 4096
         debug: true
@@ -1311,7 +1311,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         mem: 4096
         debug: true
@@ -1375,7 +1375,7 @@ jobs:
     - name: Test in Haiku
       if: ${{ contains(fromJSON('{"x86_64":["rsync","scp","nfs","sshfs","tar"],"aarch64":[],"riscv64":[],"powerpc64":[],"sparc64":[],"ppc64le":[],"s390x":[],"i386":[],"loongarch64":[],"armv7":[]}')['x86_64'], 'rsync') }}
       id: test
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         mem: 4096
         debug: true
@@ -1452,7 +1452,7 @@ jobs:
     - name: Test in Haiku
       id: testerr
       continue-on-error: true
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         debug: true
         # A command that EXISTS and fails, rather than `false` or a made-up
@@ -1498,7 +1498,7 @@ jobs:
     - name: Test in Haiku
       id: testpass
       continue-on-error: true
-      uses: vmactions/haiku-vm@35f0836daec19055432ebcee0b8b99aeb902e2dc
+      uses: vmactions/haiku-vm@4ae3c77d0ffb4d9fea4a4f5c86fca6491a65de1d
       with:
         debug: true
         # No `true` and no double quotes: this body runs on every guest, and
